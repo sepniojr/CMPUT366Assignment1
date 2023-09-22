@@ -4,6 +4,39 @@ from search.map import Map
 import getopt
 import sys
 
+import heapq
+
+def dijkstra(start, goal, gridded_map):
+    # Initialize the OPEN and CLOSED lists
+    # OPEN uses heap, CLOSED uses dictionaries
+    open_list = []
+    closed_list = {}
+    heapq.heappush(open_list, start)
+    closed_list[start.state_hash()] = start
+    print(closed_list)
+
+    while len(open_list) != 0:
+        n = heapq.heappop(open_list)
+        if n == goal:
+            return true
+#While open list not empty
+#   n = open_list.pop
+#   if n = goal
+#       return path
+#   for child in n: (get children of n)
+#       if child not in closed_list:
+#           open_list.insert(child, n.get_g() (cost of parent) + (cost connecting child and parent) (not sure how to do this))
+#           closed_list[child.state_hash()] = child
+#       if child in closed_list and ( ((cost of parent) + (cost connecting child and parent)) < closed_list[child].get_g):
+#           update cost/pointers in both open and closed lists
+#           reheapify open list
+#   return failures
+
+
+
+
+    return None, None
+
 def main():
     """
     Function for testing your A* and Dijkstra's implementation. 
@@ -49,7 +82,11 @@ def main():
         goal = goal_states[i]
     
         time_start = time.time()
-        cost, expanded_diskstra = None, None # replace None, None with the call to your Dijkstra's implementation
+
+
+        cost, expanded_diskstra = dijkstra(start, goal, gridded_map) # replace None, None with the call to your Dijkstra's implementation
+
+
         time_end = time.time()
         nodes_expanded_dijkstra.append(expanded_diskstra)
         time_dijkstra.append(time_end - time_start)
