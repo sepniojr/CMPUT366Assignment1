@@ -11,14 +11,55 @@ def dijkstra(start, goal, gridded_map):
     # OPEN uses heap, CLOSED uses dictionaries
     open_list = []
     closed_list = {}
+
+    # Adding start state to open list
     heapq.heappush(open_list, start)
     closed_list[start.state_hash()] = start
-    print(closed_list)
+    
+    #print(closed_list)
 
-    while len(open_list) != 0:
-        n = heapq.heappop(open_list)
-        if n == goal:
-            return true
+    while len(open_list) != 0: # While open list not empty
+        # Pop the node with the smallest cost
+        parent = heapq.heappop(open_list)
+        #closed_list[n.state_hash()] = n
+        if parent == goal:
+            return parent.get_cost(), None
+        # Get children of this node
+        children = gridded_map.successors(parent)
+        # Iterate through children
+        for child in children:
+            # Get unique hash value for this node
+            hash_value = child.state_hash()
+
+            # If this node was not encountered before
+            if hash_value not in closed_list:
+                #print("Adding child " + str(hash_value) + " to open and closed list")
+                # The child's cost should be the g value generated
+                child.set_cost(child.get_g())
+                closed_list[hash_value] = child
+                heapq.heappush(open_list, child)
+
+            # If this node is in closed list but the one we found is cheaper
+            if hash_value in closed_list and (child.get_g() < closed_list[hash_value].get_g()):
+
+                # Change cost of child in open list
+                child.set_cost(child.get_g())
+                # Update cost of this node in the closed list
+                closed_list[hash_value].set_cost(child.get_g())
+                heapq.heappush(open_list, child)
+                heapq.heapify(open_list)
+                #print("Cost changed from " + str(old_cost) + " to " + str(child.get_cost()))
+
+
+        #print("Parent " + str(parent.state_hash()) + " has " + str(count) + " children")
+
+    return -1, None
+            
+            
+
+        
+        
+
 #While open list not empty
 #   n = open_list.pop
 #   if n = goal
@@ -34,8 +75,6 @@ def dijkstra(start, goal, gridded_map):
 
 
 
-
-    return None, None
 
 def main():
     """
