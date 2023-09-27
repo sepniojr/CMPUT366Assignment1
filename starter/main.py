@@ -9,8 +9,10 @@ import heapq
 def dijkstra(start, goal, gridded_map):
     # Initialize the OPEN and CLOSED lists
     # OPEN uses heap, CLOSED uses dictionaries
+    print("Function Dijkstra")
     open_list = []
     closed_list = {}
+    num_expansions = 0
 
     # Adding start state to open list
     heapq.heappush(open_list, start)
@@ -21,9 +23,10 @@ def dijkstra(start, goal, gridded_map):
     while len(open_list) != 0: # While open list not empty
         # Pop the node with the smallest cost
         parent = heapq.heappop(open_list)
+        num_expansions = num_expansions + 1
         #closed_list[n.state_hash()] = n
         if parent == goal:
-            return parent.get_cost(), None
+            return parent.get_cost(), num_expansions
         # Get children of this node
         children = gridded_map.successors(parent)
         # Iterate through children
@@ -73,8 +76,81 @@ def dijkstra(start, goal, gridded_map):
 #           reheapify open list
 #   return failures
 
+def astar(start, goal, gridded_map):
+    print("Function Astar")
+    # Initialize the OPEN and CLOSED lists
+    # OPEN uses heap, CLOSED uses dictionaries
+    open_list = []
+    closed_list = {}
+    num_expansions = 0
+
+    # Adding start state to open list
+    heapq.heappush(open_list, start)
+    
+    
+    #print(closed_list)
+
+    while len(open_list) != 0: # While open list not empty
+        # Pop the node with the smallest cost
+        parent = heapq.heappop(open_list)
+        num_expansions = num_expansions + 1
+        #closed_list[n.state_hash()] = n
+        if parent == goal:
+            return parent.get_cost(), num_expansions
+        
+        closed_list[parent.state_hash()] = parent
 
 
+        # Get children of this node
+        children = gridded_map.successors(parent)
+        
+        # Iterate through children
+        for child in children:
+            # Get unique hash value for this node
+            hash_value = child.state_hash()
+            h_n = hfunction(child.get_x(), goal.get_x(), child.get_y(), goal.get_y())
+            
+            # In the A star algorithm, once a node is popped off the graph we know we have found the lowest cost for that node
+            if hash_value not in closed_list:
+                #print("Adding child " + str(hash_value) + " to open and closed list")
+                # The child's cost should be the g value generated
+                child.set_cost(child.get_g() + h_n)
+                closed_list[hash_value] = child
+                heapq.heappush(open_list, child)
+
+            # If this node is in closed list but the one we found is cheaper
+            if hash_value in closed_list and ((child.get_g() + h_n) < closed_list[hash_value].get_cost()):
+
+                # Change cost of child in open list
+                child.set_cost(child.get_g() + h_n)
+                # Update cost of this node in the closed list
+                closed_list[hash_value].set_cost(child.get_g() + h_n)
+                heapq.heappush(open_list, child)
+                heapq.heapify(open_list)
+
+            #if hash_value not in closed_list:
+                #closed_list[hash_value] = child
+
+                
+            #if hash_value in closed_list and ((child.get_g() + h_n) < closed_list[hash_value].get_cost()):
+                
+                # Change cost of child in open list
+                #child.set_cost(child.get_g() + h_n)
+                # Update cost of this node in the closed list
+                #closed_list[hash_value].set_cost(child.get_g() + h_n)
+                #heapq.heappush(open_list, child)
+                #heapq.heapify(open_list)
+                #print("Cost changed from " + str(old_cost) + " to " + str(child.get_cost()))
+
+
+        #print("Parent " + str(parent.state_hash()) + " has " + str(count) + " children")
+
+    return -1, None
+
+def hfunction(x_eval, x_goal, y_eval, y_goal):
+    delta_x = abs(x_eval - x_goal)
+    delta_y = abs(y_eval - y_goal)
+    return (1.5*min(delta_x, delta_y)) + abs(delta_x - delta_y)
 
 def main():
     """
@@ -142,7 +218,7 @@ def main():
         goal = goal_states[i]
     
         time_start = time.time()
-        cost, expanded_astar = None, None # replace None, None with the call to your A* implementation
+        cost, expanded_astar = astar(start, goal, gridded_map) # replace None, None with the call to your A* implementation
         time_end = time.time()
 
         nodes_expanded_astar.append(expanded_astar)
