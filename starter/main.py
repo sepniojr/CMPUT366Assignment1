@@ -35,7 +35,6 @@ def dijkstra(start, goal, gridded_map):
         for child in children:
             # Get unique hash value for this node
             hash_value = child.state_hash()
-
             # If this node was not encountered before
             if hash_value not in closed_list:
                 #print("Adding child " + str(hash_value) + " to open and closed list")
@@ -45,14 +44,13 @@ def dijkstra(start, goal, gridded_map):
                 heapq.heappush(open_list, child)
 
             # If this node is in closed list but the one we found is cheaper
-            if hash_value in closed_list and (child.get_g() < closed_list[hash_value].get_g()):
+            if hash_value in closed_list and (child.get_g() < closed_list[hash_value].get_cost()):
 
                 # Change cost of child in open list
-                child.set_cost(child.get_g())
+
                 # Update cost of this node in the closed list
                 closed_list[hash_value].set_cost(child.get_g())
                 heapq.heappush(open_list, child)
-                heapq.heapify(open_list)
                 #print("Cost changed from " + str(old_cost) + " to " + str(child.get_cost()))
 
 
@@ -89,7 +87,7 @@ def astar(start, goal, gridded_map):
     # Adding start state to open list
     heapq.heappush(open_list, start)
     
-    
+    closed_list[start.state_hash()] = start
     #print(closed_list)
 
     while len(open_list) != 0: # While open list not empty
@@ -101,9 +99,6 @@ def astar(start, goal, gridded_map):
             return parent.get_cost(), num_expansions
         
         num_expansions = num_expansions + 1
-
-        closed_list[parent.state_hash()] = parent
-
 
         # Get children of this node
         children = gridded_map.successors(parent)
@@ -129,23 +124,9 @@ def astar(start, goal, gridded_map):
                 child.set_cost(child.get_g() + h_n)
                 # Update cost of this node in the closed list
                 closed_list[hash_value].set_cost(child.get_g() + h_n)
-                heapq.heappush(open_list, child)
+                closed_list[hash_value].set_g(child.get_g())
+
                 heapq.heapify(open_list)
-
-            #if hash_value not in closed_list:
-                #closed_list[hash_value] = child
-
-                
-            #if hash_value in closed_list and ((child.get_g() + h_n) < closed_list[hash_value].get_cost()):
-                
-                # Change cost of child in open list
-                #child.set_cost(child.get_g() + h_n)
-                # Update cost of this node in the closed list
-                #closed_list[hash_value].set_cost(child.get_g() + h_n)
-                #heapq.heappush(open_list, child)
-                #heapq.heapify(open_list)
-                #print("Cost changed from " + str(old_cost) + " to " + str(child.get_cost()))
-
 
         #print("Parent " + str(parent.state_hash()) + " has " + str(count) + " children")
 
