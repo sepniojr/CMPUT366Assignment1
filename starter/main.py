@@ -58,7 +58,7 @@ def dijkstra(start, goal, gridded_map):
 
         #print("Parent " + str(parent.state_hash()) + " has " + str(count) + " children")
 
-    return -1, None
+    return -1, num_expansions
             
             
 
@@ -149,7 +149,7 @@ def astar(start, goal, gridded_map):
 
         #print("Parent " + str(parent.state_hash()) + " has " + str(count) + " children")
 
-    return -1, None
+    return -1, num_expansions
 
 def hfunction(x_eval, x_goal, y_eval, y_goal):
     delta_x = abs(x_eval - x_goal)
