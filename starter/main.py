@@ -23,10 +23,12 @@ def dijkstra(start, goal, gridded_map):
     while len(open_list) != 0: # While open list not empty
         # Pop the node with the smallest cost
         parent = heapq.heappop(open_list)
-        num_expansions = num_expansions + 1
+
         #closed_list[n.state_hash()] = n
         if parent == goal:
             return parent.get_cost(), num_expansions
+        
+        num_expansions = num_expansions + 1
         # Get children of this node
         children = gridded_map.successors(parent)
         # Iterate through children
@@ -93,11 +95,13 @@ def astar(start, goal, gridded_map):
     while len(open_list) != 0: # While open list not empty
         # Pop the node with the smallest cost
         parent = heapq.heappop(open_list)
-        num_expansions = num_expansions + 1
+
         #closed_list[n.state_hash()] = n
         if parent == goal:
             return parent.get_cost(), num_expansions
         
+        num_expansions = num_expansions + 1
+
         closed_list[parent.state_hash()] = parent
 
 
